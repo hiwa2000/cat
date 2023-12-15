@@ -3,7 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:logger/logger.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart'; 
+import 'package:cloud_firestore/cloud_firestore.dart'; 
+import 'firebase_options.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 
 final Logger logger = Logger();
@@ -60,6 +61,14 @@ class _AgeEstimationScreenState extends State<AgeEstimationScreen> {
         setState(() {
           estimatedAge = data['age'] ?? 0;
         });
+
+        // Firestore Integration: Hinzugefügt
+        await FirebaseFirestore.instance.collection('ageEstimations').add({
+          'name': name,
+          'estimatedAge': estimatedAge,
+          'timestamp': FieldValue.serverTimestamp(),
+        });
+
       } else {
         setState(() {
           estimatedAge = 0;
